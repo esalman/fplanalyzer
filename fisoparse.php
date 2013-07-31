@@ -1,6 +1,5 @@
 <?php
 header('Access-Control-Allow-Origin: http://fantasy.premierleague.com');
-include 'HTML5/Parser.php';
 $url = 'http://crackthecode.fiso.co.uk/blog/';
 $content = file_get_contents($url);
 $arr = array();

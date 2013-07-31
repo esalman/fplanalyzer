@@ -25,7 +25,7 @@ var fplAnalyzer = {
     fixArr: {},
     fisoArr: {},
     options: {
-    	domain: 'http://127.0.0.1/test/fpl/'
+    	domain: 'http://immense-mesa-8656.herokuapp.com/'
     },
     init: function () {
     	fplAnalyzer.initialized = true
