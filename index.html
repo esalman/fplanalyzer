@@ -29,9 +29,49 @@
       </header>
       <section>
         <h1>
-<a name="fplanalyzer" class="anchor" href="#fplanalyzer"><span class="octicon octicon-link"></span></a>fplanalyzer</h1>
-
-<p>This is a bookmarklet that allows you to preview opponents on different GW on fantasy.premierleague.com</p>
+        <a name="fplanalyzer" class="anchor" href="#fplanalyzer"><span class="octicon octicon-link"></span></a>FPLAnalyzer</h1>
+        
+        <p>This is a bookmarklet that allows you to preview opponents on different GW <em>(and do other stuff in future, hopefully)</em> 
+        on <a href="http://fantasy.premierleague.com">fantasy.premierleague.com</a>.</p>
+        
+        <p><strong>Motivation</strong></p>
+        
+        <p>I have been playing FPL since 2007/08. Last couple of years I started to rely more and more on 
+          statistics. When picking team or transferring, there are a handful of stats that I need to check frequently.
+          I created this bookmarklet to aid in that process. I only plan to add features to this bookmarklet which I
+          need for myself. But I've open-sourced it so that anyone else can modify it and make their own version.
+        </p>
+        
+        <p><strong>How to setup:</strong></p>
+        
+        <ul>
+        <li>Create a new bookmark on your browser.</li>
+        <li>Name of the bookmark: <em>anything</em>
+        </li>
+        </ul><p><em>URL of the bookmark:</em></p>
+        
+        <textarea style="width: 100%; height: 100px;">javascript:(function(){if(window.fplAnalyzeTrigger==undefined){var e=document.createElement("script");e.setAttribute("type","text/javascript");e.setAttribute("src","http://pure-ocean-7640.herokuapp.com/script.js");document.getElementsByTagName("head")[0].appendChild(e);$("body").append($('&lt;div style="background: #126E37; color: #FFF; position: fixed; top: 0px; width: 100%; text-align: center; padding: 3px 0px; font-weight: bold; font-size: larger;"&gt;FPLAnalyzer loaded! Click this again to analyze. Visit &lt;a href="http://fplanalyzer.com" style="color: #EDEDED" target="_blank"&gt;fplanalyzer.com&lt;/a&gt; for update &lt;a href="#" onclick="javascript:$(this).parent().remove(); return false;" style="font-size: small; color: #EDEDED;"&gt;[close]&lt;/a&gt;&lt;/div&gt;'))}else{window.fplAnalyzeTrigger()}})()</textarea>
+        
+        <ul>
+        <li>Save the boomark (preferably on browser bookmark bar)</li>
+        </ul><p><strong>How to use:</strong></p>
+        
+        <p><iframe src="//www.youtube.com/embed/A3KbkUUdJx0" allowfullscreen="" frameborder="0" height="315" width="420"></iframe></p>
+        
+        <ul>
+        <li>Go to your 'Pick Team' or Transfer page on FPL site.</li>
+        <li>Click on the bookmark (first time click loads script on background)</li>
+        <li>Navigate to any gameweek <strong>by clicking on the link in the fixture list below your team</strong>.</li>
+        <li>Now click the bookmark. The opponent names below each player should change accordingly.</li>
+        </ul><p>You can use it for strategizing in different ways. On Pick Team page, navigate to different gameweeks and click the bookmark to see if your current
+        team is any good for the forseeable future. On Transfer page, shuffle your team, navigate to another GW and click the bookmark to strategize.</p>
+        
+        <p>If it doesn't work, you can open issues here on github.</p>
+        
+        <ul>
+        <li>[x] <strong>LATEST UPDATE (8/1/13): added FISO transfer target percentage. Also, the bookmark code has changed, please
+          update it too.</strong></li>
+        </ul>
       </section>
       <footer>
         <p>This project is maintained by <a href="https://github.com/esalman">esalman</a></p>
