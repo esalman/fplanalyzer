@@ -40,7 +40,8 @@ var fplAnalyzer = {
             nextGW: $('<a class="nextGW" style="background: #126e37; color: #FFF; padding: 2px 3px; display: block; margin-bottom: 1px; font-size: smaller;" href="javascript:void(0)">GW+1</a>'),
             opponent: $('<a class="opponent" style="background: #126e37; color: #FFF; padding: 2px 3px; display: block; margin-bottom: 1px; font-size: smaller;" href="javascript:void(0)">Opponent</a>'),
             price: $('<a class="price" style="background: #126e37; color: #FFF; padding: 2px 3px; display: block; margin-bottom: 1px; font-size: smaller;" href="javascript:void(0)">Price</a>'),
-            nti: $('<a class="nti" style="background: #126e37; color: #FFF; padding: 2px 3px; display: block; margin-bottom: 1px; font-size: smaller;" href="javascript:void(0)">NTI</a>'),
+            ntit: $('<a class="ntit" style="background: #126e37; color: #FFF; padding: 2px 3px; display: block; margin-bottom: 1px; font-size: smaller;" href="javascript:void(0)">NTI day</a>'),
+            nti: $('<a class="nti" style="background: #126e37; color: #FFF; padding: 2px 3px; display: block; margin-bottom: 1px; font-size: smaller;" href="javascript:void(0)">NTI%</a>'),
             genRMT: $('<a class="genRMT" style="background: #126e37; color: #FFF; padding: 2px 3px; display: block; margin-bottom: 1px; font-size: smaller;" href="javascript:void(0)">Gen RMT</a>')        
         }
     },
@@ -55,7 +56,6 @@ var fplAnalyzer = {
         // append ui controls above pitch area an dand bind their events
         $.each( fplAnalyzer.controls.pitchControls, function (i, v) {
             // show the price button on transfers page only
-            if ( i == 'price' && location.href.search('transfers') < 0 ) return
             parentDiv.append( v )
             v.bind( 'click', fplAnalyzer.events[i] )
         } )
@@ -95,11 +95,13 @@ var fplAnalyzer = {
 	    	$(player).find(".ismElementDetail dd").css('background-color', '#126E37')
             // find opponent using shirt title attribute
             var opponent = '<div class="opponent">'+ ( fplAnalyzer.fixArr[$(player).find(".ismShirt").attr("title")] == undefined ? "" : fplAnalyzer.fixArr[$(player).find(".ismShirt").attr("title")] ) +'</div>'
-            // get NTI
-	    	var nti = '<div class="nti" style="display: none;">'+ fplAnalyzer.playerAttrib[ fplAnalyzer.getPlayerIDFromContainer(player) ].NTIPercent +'%</div>'
+            // get NTI Percent
+            var nti = '<div class="nti" style="display: none;">'+ fplAnalyzer.playerAttrib[ fplAnalyzer.getPlayerIDFromContainer(player) ].NTIPercent +'%</div>'
+            // get NTI Today
+            var ntit = '<div class="ntit" style="display: none;">'+ fplAnalyzer.playerAttrib[ fplAnalyzer.getPlayerIDFromContainer(player) ].NTIToday +'</div>'
             // make price div
             var price = '<div class="price" style="display: none;">'+ fplAnalyzer.playerAttrib[ fplAnalyzer.getPlayerIDFromContainer(player) ].price +'</div>'
-	    	$(player).find(".ismElementDetail dd").html( opponent + price + nti )
+	    	$(player).find(".ismElementDetail dd").html( opponent + price + nti + ntit )
         })
         fplAnalyzer.controls.loader.hide()
     },
@@ -110,7 +112,7 @@ var fplAnalyzer = {
     		var id = fplAnalyzer.getPlayerIDFromContainer(v)
             // only request those players not saved yet
     		if ( fplAnalyzer.playerAttrib[ id ] == undefined ) {
-                fplAnalyzer.playerAttrib[ id ] = { 'price': fplAnalyzer.getPlayerPriceFromContainer(v) }
+                fplAnalyzer.playerAttrib[ id ] = {}
     			ids.push( id )
             }
     	} )
@@ -128,7 +130,9 @@ var fplAnalyzer = {
     	} ).done( function ( json ) {
     		// populate the player attribute array
             $.each( json, function (i, v) {
-                fplAnalyzer.playerAttrib[i].NTIPercent = v
+                fplAnalyzer.playerAttrib[i].NTIPercent = v.c
+                fplAnalyzer.playerAttrib[i].price = v.p
+                fplAnalyzer.playerAttrib[i].NTIToday = v.d
             } )
             // update opponent
     		fplAnalyzer.loadFixture()
@@ -166,8 +170,20 @@ var fplAnalyzer = {
             $('.ismElementDetail dd > div').css('display', 'none')
             $('.ismElementDetail dd > div.nti').css('display', 'block')
         },
+        ntit: function () {
+            $('.ismElementDetail dd > div').css('display', 'none')
+            $('.ismElementDetail dd > div.ntit').css('display', 'block')
+        },
         genRMT: function () {
-            
+            var position = ['Goalkeepers', 'Defenders', 'Midfielders', 'Forwards', 'Substitutes']
+            var rmtStr = '';
+            $.each( $(".ismPitchRow"), function (j, row) {
+                rmtStr += '\n'+position[j]+': '
+                $.each( $(row).find('div[id^=ismGraphical]'), function (i, player) {
+                    rmtStr += $(player).find('span.ismPitchWebName').html().trim()+' '
+                })
+            })
+            window.prompt('You can copy the following RMT string:', rmtStr)
         }
     },
     updateFixtureNavigateButton: function () {

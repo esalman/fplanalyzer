@@ -9,7 +9,13 @@ foreach( explode(',', $_REQUEST['id']) as $playerId ) {
 	$end = strpos($str, '</tr>')-5;
 	$str = substr($str, 0, $end);
 	$info = explode('</td><td>', $str);
-	$arr[ $playerId ] = $info[7];
+	$arr[ $playerId ] = array(
+		'p' => $info[3],
+		'n' => $info[4],
+		't' => $info[5],
+		'd' => $info[6],
+		'c' => $info[7],
+	);
 }
 echo json_encode( $arr );
 exit();
