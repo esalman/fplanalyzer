@@ -175,10 +175,10 @@ var fplAnalyzer = {
             $('.ismElementDetail dd > div.ntit').css('display', 'block')
         },
         genRMT: function () {
-            var position = ['Goalkeepers', 'Defenders', 'Midfielders', 'Forwards', 'Substitutes']
             var rmtStr = '';
             $.each( $(".ismPitchRow"), function (j, row) {
-                rmtStr += '\n'+position[j]+': '
+                rmtStr += '\n'
+                if ( j == 4 ) rmtStr += '\nSubs: '
                 $.each( $(row).find('div[id^=ismGraphical]'), function (i, player) {
                     rmtStr += $(player).find('span.ismPitchWebName').html().trim()+' '
                 })
