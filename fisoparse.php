@@ -12,9 +12,8 @@ foreach( explode(',', $_REQUEST['id']) as $playerId ) {
 	$arr[ $playerId ] = array(
 		'p' => $info[3],
 		'n' => $info[4],
-		't' => $info[5],
-		'd' => $info[6],
-		'c' => $info[7],
+		'd' => $info[5],
+		'c' => $info[6],
 	);
 }
 echo json_encode( $arr );

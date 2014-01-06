@@ -28,8 +28,10 @@ var fplAnalyzer = {
     fixArr: {},
     // selected player price, nti
     playerAttrib: {},
+    currentGW: 0,
     options: {
-    	domain: 'http://pure-ocean-7640.herokuapp.com/'
+    	domain: 'http://pure-ocean-7640.herokuapp.com/',
+        numberOfOpponentsToDisplay: 3
     },
     // ui elements
     controls: {
@@ -72,20 +74,25 @@ var fplAnalyzer = {
     	fplAnalyzer.controls.loader.show()
     	fplAnalyzer.loadFisoData()
     },
-    // parse the fixture table and update fixarr
+    // parse the fixture table and update fixArr
     loadFixture: function () {
-    	fplAnalyzer.fixArr = {}
+    	// fplAnalyzer.fixArr = {}
+        if ( ! $('.ismFixtureTable caption').html() ) return
+        fplAnalyzer.currentGW = $('.ismFixtureTable caption').html().split('-')[0].replace('Gameweek', '').trim()
 	    $.each($(".ismFixtureTable tbody tr"), function (i, team) {
 	    	fh = fplAnalyzer.fixArr[$(team).children(".ismHomeTeam").html()]
 	    	fa = fplAnalyzer.fixArr[$(team).children(".ismAwayTeam").html()]
 	    	th = fplAnalyzer.teamArr[$(team).children(".ismHomeTeam").html()]
 	    	ta = fplAnalyzer.teamArr[$(team).children(".ismAwayTeam").html()]
+            if ( ta == undefined ) return
             // if no fixture, empty
             // at home upper, at away lower
             // home on the left column
-            fplAnalyzer.fixArr[$(team).children(".ismHomeTeam").html()] = (fh == undefined ? "" : fh + ",") + ta.toUpperCase()
+            if ( fplAnalyzer.fixArr[$(team).children(".ismHomeTeam").html()] == undefined ) fplAnalyzer.fixArr[$(team).children(".ismHomeTeam").html()] = {}
+            fplAnalyzer.fixArr[$(team).children(".ismHomeTeam").html()][fplAnalyzer.currentGW] = ta.toUpperCase()
             // away on the right column
-	        fplAnalyzer.fixArr[$(team).children(".ismAwayTeam").html()] = (fa == undefined ? "" : fa + ",") + th.toLowerCase()
+            if ( fplAnalyzer.fixArr[$(team).children(".ismAwayTeam").html()] == undefined ) fplAnalyzer.fixArr[$(team).children(".ismAwayTeam").html()] = {}
+	        fplAnalyzer.fixArr[$(team).children(".ismAwayTeam").html()][fplAnalyzer.currentGW] = th.toLowerCase()
 	    })
     },
     // update data of each player in pitch area
@@ -94,7 +101,7 @@ var fplAnalyzer = {
             // this is for first time only
 	    	$(player).find(".ismElementDetail dd").css('background-color', '#126E37')
             // find opponent using shirt title attribute
-            var opponent = '<div class="opponent">'+ ( fplAnalyzer.fixArr[$(player).find(".ismShirt").attr("title")] == undefined ? "" : fplAnalyzer.fixArr[$(player).find(".ismShirt").attr("title")] ) +'</div>'
+            var opponent = '<div class="opponent">'+ ( fplAnalyzer.getNextNOpponent( $(player).find(".ismShirt").attr("title") ) ) +'</div>'
             // get NTI Percent
             var nti = '<div class="nti" style="display: none;">'+ fplAnalyzer.playerAttrib[ fplAnalyzer.getPlayerIDFromContainer(player) ].NTIPercent +'%</div>'
             // get NTI Today
@@ -121,7 +128,7 @@ var fplAnalyzer = {
     	if ( ids.length < 1 ) {
 	    	fplAnalyzer.loadFixture()
     		fplAnalyzer.updateOpponent()
-    		return;
+    		return
     	}
 
         // make request
@@ -189,6 +196,14 @@ var fplAnalyzer = {
     updateFixtureNavigateButton: function () {
         if ( $('.ismPagPrev').length > 0 ) $('#fplAnalyzerControl .prevGW').html( $('.ismPagPrev').html().replace('Gameweek', 'GW') )
         if ( $('.ismPagNext').length > 0 ) $('#fplAnalyzerControl .nextGW').html( $('.ismPagNext').html().replace('Gameweek', 'GW') )
+    },
+    getNextNOpponent: function ( team ) {
+        var opponentString = ''
+        for ( i = 0; i < fplAnalyzer.options.numberOfOpponentsToDisplay; i++ ) {
+            if ( fplAnalyzer.fixArr[ team ][ parseInt( fplAnalyzer.currentGW ) + i ] == undefined ) continue
+            opponentString += fplAnalyzer.fixArr[ team ][ parseInt( fplAnalyzer.currentGW ) + i ] + ( i < fplAnalyzer.options.numberOfOpponentsToDisplay - 1 ? ' ' : '' )
+        }
+        return opponentString
     }
 }
 
