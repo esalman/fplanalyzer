@@ -31,7 +31,7 @@ var fplAnalyzer = {
     currentGW: 0,
     options: {
     	domain: 'http://pure-ocean-7640.herokuapp.com/',
-        numberOfOpponentsToDisplay: 3
+        numberOfOpponentsToDisplay: 1
     },
     // ui elements
     controls: {
@@ -76,23 +76,27 @@ var fplAnalyzer = {
     },
     // parse the fixture table and update fixArr
     loadFixture: function () {
-    	// fplAnalyzer.fixArr = {}
+    	fplAnalyzer.fixArr = {}
         if ( ! $('.ismFixtureTable caption').html() ) return
         fplAnalyzer.currentGW = $('.ismFixtureTable caption').html().split('-')[0].replace('Gameweek', '').trim()
 	    $.each($(".ismFixtureTable tbody tr"), function (i, team) {
-	    	fh = fplAnalyzer.fixArr[$(team).children(".ismHomeTeam").html()]
-	    	fa = fplAnalyzer.fixArr[$(team).children(".ismAwayTeam").html()]
-	    	th = fplAnalyzer.teamArr[$(team).children(".ismHomeTeam").html()]
-	    	ta = fplAnalyzer.teamArr[$(team).children(".ismAwayTeam").html()]
-            if ( ta == undefined ) return
+	    	h = $(team).children(".ismHomeTeam").html()
+	    	a = $(team).children(".ismAwayTeam").html()
+            if ( fplAnalyzer.teamArr[h] == undefined ) return
             // if no fixture, empty
-            // at home upper, at away lower
+            // at home uppercase, at away lowercase
             // home on the left column
-            if ( fplAnalyzer.fixArr[$(team).children(".ismHomeTeam").html()] == undefined ) fplAnalyzer.fixArr[$(team).children(".ismHomeTeam").html()] = {}
-            fplAnalyzer.fixArr[$(team).children(".ismHomeTeam").html()][fplAnalyzer.currentGW] = ta.toUpperCase()
+            if ( fplAnalyzer.fixArr[h] == undefined ) {
+                fplAnalyzer.fixArr[h] = {}
+                fplAnalyzer.fixArr[h][fplAnalyzer.currentGW] = fplAnalyzer.teamArr[a].toUpperCase()
+            }
+            else fplAnalyzer.fixArr[h][fplAnalyzer.currentGW] += ' '+ fplAnalyzer.teamArr[a].toUpperCase()
             // away on the right column
-            if ( fplAnalyzer.fixArr[$(team).children(".ismAwayTeam").html()] == undefined ) fplAnalyzer.fixArr[$(team).children(".ismAwayTeam").html()] = {}
-	        fplAnalyzer.fixArr[$(team).children(".ismAwayTeam").html()][fplAnalyzer.currentGW] = th.toLowerCase()
+            if ( fplAnalyzer.fixArr[a] == undefined ) {
+                fplAnalyzer.fixArr[a] = {}
+                fplAnalyzer.fixArr[a][fplAnalyzer.currentGW] = fplAnalyzer.teamArr[h].toLowerCase()
+           }
+           else fplAnalyzer.fixArr[a][fplAnalyzer.currentGW] += ' '+ fplAnalyzer.teamArr[h].toLowerCase()
 	    })
     },
     // update data of each player in pitch area
@@ -200,7 +204,7 @@ var fplAnalyzer = {
     getNextNOpponent: function ( team ) {
         var opponentString = ''
         for ( i = 0; i < fplAnalyzer.options.numberOfOpponentsToDisplay; i++ ) {
-            if ( fplAnalyzer.fixArr[ team ][ parseInt( fplAnalyzer.currentGW ) + i ] == undefined ) continue
+            if ( fplAnalyzer.fixArr[ team ] == undefined || fplAnalyzer.fixArr[ team ][ parseInt( fplAnalyzer.currentGW ) + i ] == undefined ) continue
             opponentString += fplAnalyzer.fixArr[ team ][ parseInt( fplAnalyzer.currentGW ) + i ] + ( i < fplAnalyzer.options.numberOfOpponentsToDisplay - 1 ? ' ' : '' )
         }
         return opponentString
