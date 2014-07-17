@@ -11,7 +11,7 @@ foreach( explode(',', $_REQUEST['id']) as $playerId ) {
 	$info = explode('</td><td>', $str);
 	$arr[ $playerId ] = array(
 		'p' => $info[3],
-		'n' => $info[4],
+		'n' => str_replace(',', '', $info[4]),
 		'd' => $info[5],
 		'c' => $info[6],
 	);
