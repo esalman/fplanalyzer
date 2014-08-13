@@ -147,20 +147,20 @@ var fplAnalyzer = {
     	}
 
         // make request
-    	// $.getJSON( fplAnalyzer.options.domain+'fisoparse.php', {
-    	// 	id: ids.join(',')
-    	// } ).done( function ( json ) {
-    	// 	// populate the player attribute array
-     //        $.each( json, function (i, v) {
-     //            fplAnalyzer.playerAttrib[i].NTIPercent = v.c
-     //            fplAnalyzer.playerAttrib[i].price = v.p
-     //            fplAnalyzer.playerAttrib[i].NTIToday = v.d
-     //            fplAnalyzer.playerAttrib[i].ownership = fplAnalyzer.totalPlayer ? ( v.n * 100 / fplAnalyzer.totalPlayer ).toFixed(2) + '%' : v.n
-     //        } )
-     //        // update opponent
-    	// 	fplAnalyzer.loadFixture()
-    	// 	fplAnalyzer.updateOpponent()
-    	// } )
+    	$.getJSON( fplAnalyzer.options.domain+'fisoparse.php', {
+    		id: ids.join(',')
+    	} ).done( function ( json ) {
+    		// populate the player attribute array
+            $.each( json, function (i, v) {
+                fplAnalyzer.playerAttrib[i].NTIPercent = v.c
+                fplAnalyzer.playerAttrib[i].price = v.p
+                fplAnalyzer.playerAttrib[i].NTIToday = v.d
+                fplAnalyzer.playerAttrib[i].ownership = fplAnalyzer.totalPlayer ? ( v.n * 100 / fplAnalyzer.totalPlayer ).toFixed(2) + '%' : v.n
+            } )
+            // update opponent
+    		fplAnalyzer.loadFixture()
+    		fplAnalyzer.updateOpponent()
+    	} )
         fplAnalyzer.loadFixture()
         fplAnalyzer.updateOpponent()
     },
