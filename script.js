@@ -38,16 +38,17 @@ var fplAnalyzer = {
     controls: {
         loader: $('<span style="background: #F00; color: #FFF; position: fixed; top: 0px; left: 0px; padding: 3px 3px; display: none;">Loading...</span>'),
         pitchControls: {
-            reload: $('<a class="reload" style="background: #126e37; color: #FFF; padding: 2px 3px; display: block; margin-bottom: 1px; font-size: smaller;" href="javascript:void(0)">Reload</a>'),
-            prevGW: $('<a class="prevGW" style="background: #126e37; color: #FFF; padding: 2px 3px; display: block; margin-bottom: 1px; font-size: smaller;" href="javascript:void(0)">GW-1</a>'),
-            nextGW: $('<a class="nextGW" style="background: #126e37; color: #FFF; padding: 2px 3px; display: block; margin-bottom: 1px; font-size: smaller;" href="javascript:void(0)">GW+1</a>'),
-            opponent: $('<a class="opponent" style="background: #126e37; color: #FFF; padding: 2px 3px; display: block; margin-bottom: 1px; font-size: smaller;" href="javascript:void(0)">Opponent</a>'),
-            price: $('<a class="price" style="background: #126e37; color: #FFF; padding: 2px 3px; display: block; margin-bottom: 1px; font-size: smaller;" href="javascript:void(0)">Price</a>'),
-            ntit: $('<a class="ntit" style="background: #126e37; color: #FFF; padding: 2px 3px; display: block; margin-bottom: 1px; font-size: smaller;" href="javascript:void(0)">NTI day</a>'),
-            nti: $('<a class="nti" style="background: #126e37; color: #FFF; padding: 2px 3px; display: block; margin-bottom: 1px; font-size: smaller;" href="javascript:void(0)">%NTI</a>'),
-            own: $('<a class="own" style="background: #126e37; color: #FFF; padding: 2px 3px; display: block; margin-bottom: 1px; font-size: smaller;" href="javascript:void(0)">%own</a>'),
-            genRMT: $('<a class="genRMT" style="background: #126e37; color: #FFF; padding: 2px 3px; display: block; margin-bottom: 1px; font-size: smaller;" href="javascript:void(0)">Gen RMT</a>'),
-            webLink: $('<a class="webLink" style="background: #126e37; color: #FFF; padding: 2px 3px; display: block; margin-bottom: 1px; font-size: smaller;" href="http://fplanalyzer.com" target="_blank">fplA.com</a>')
+            reload: $('<a class="reload" style="background: #126e37; color: #FFF; padding: 2px 3px; display: inline-block; margin: 0px 1px 1px 0px; font-size: small; width: 14px; text-align: center;" href="javascript:void(0)" title="Reload">&#8634;</a>'),
+            prevGW: $('<a class="prevGW" style="background: #126e37; color: #FFF; padding: 2px 3px; display: inline-block; margin: 0px 1px 1px 0px; font-size: small; width: 14px; text-align: center;" href="javascript:void(0)" title="Previous GW">◀</a>'),
+            nextGW: $('<a class="nextGW" style="background: #126e37; color: #FFF; padding: 2px 3px; display: inline-block; margin: 0px 1px 1px 0px; font-size: small; width: 14px; text-align: center;" href="javascript:void(0)" title="Next GW">▶</a><br />'),
+            opponent: $('<a class="opponent" style="background: #35A649; color: #FFF; padding: 2px 3px; display: inline-block; margin: 0px 1px 1px 0px; font-size: small; width: 14px; text-align: center;" href="javascript:void(0)" title="Opponent">V</a>'),
+            price: $('<a class="price" style="background: #35A649; color: #FFF; padding: 2px 3px; display: inline-block; margin: 0px 1px 1px 0px; font-size: small; width: 14px; text-align: center;" href="javascript:void(0)" title="Price">£</a>'),
+            own: $('<a class="own" style="background: #35A649; color: #FFF; padding: 2px 3px; display: inline-block; margin: 0px 1px 1px 0px; font-size: small; width: 14px; text-align: center;" href="javascript:void(0)" title="% Ownership">%</a><br />'),
+            ntit: $('<a class="ntit" style="background: #126e37; color: #FFF; padding: 2px 3px; display: inline-block; margin: 0px 1px 1px 0px; font-size: small; width: 14px; text-align: center;" href="javascript:void(0)" title="NTI Today">T</a>'),
+            nti: $('<a class="nti" style="background: #126e37; color: #FFF; padding: 2px 3px; display: inline-block; margin: 0px 1px 1px 0px; font-size: small; width: 14px; text-align: center;" href="javascript:void(0)" title="% NTI">%</a>'),
+            genRMT: $('<a class="genRMT" style="background: #126e37; color: #FFF; padding: 2px 3px; display: inline-block; margin: 0px 1px 1px 0px; font-size: small; width: 14px; text-align: center;" href="javascript:void(0)" title="Rate My Team!">★</a><br />'),
+            webLink: $('<a class="webLink" style="background: #35A649; color: #FFF; padding: 2px 3px; display: inline-block; margin: 0px 1px 1px 0px; font-size: small; width: 14px; text-align: center;" href="http://fplanalyzer.com" target="_blank" title="www.fplanalyzer.com">&copy;</a>'),
+            share: $('<a class="share" style="background: #35A649; color: #FFF; padding: 2px 3px; display: inline-block; margin: 0px 1px 1px 0px; font-size: small; width: 14px; text-align: center;" href="javascript:void(0)" title="Share FPL Analyzer!">❤</a><div class="addthis_sharing_toolbox" style="display: none;" data-url="http://fplanalyzer.com" data-title="Check out FPL Analyzer!"></div>')
         }
     },
     // executed when bookmark clicked second time, and never again
@@ -77,6 +78,12 @@ var fplAnalyzer = {
             createCookie('fplAnalyzerTotalPlayer', fplAnalyzer.totalPlayer, 7)
         }
         if ( readCookie('fplAnalyzerTotalPlayer') && fplAnalyzer.totalPlayer != readCookie('fplAnalyzerTotalPlayer') ) fplAnalyzer.totalPlayer = readCookie('fplAnalyzerTotalPlayer')
+
+        // addthis share buttons
+        var f = document.createElement('script')
+        f.setAttribute("type", "text/javascript")
+        f.setAttribute("src", "//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-53edcfcd20914b86")
+        document.getElementsByTagName("head")[0].appendChild(f)
     },
     // executed after bookmark clicked the first time, and also on reload button click
     update: function () {
@@ -203,6 +210,10 @@ var fplAnalyzer = {
             $('.ismElementDetail dd > div').css('display', 'none')
             $('.ismElementDetail dd > div.ownership').css('display', 'block')
         },
+        share: function () {
+            if ( $('.addthis_sharing_toolbox').css('display') === 'none' ) $('.addthis_sharing_toolbox').show()
+            else $('.addthis_sharing_toolbox').hide()
+        },
         genRMT: function () {
             var rmtStr = '';
             $.each( $(".ismPitchRow"), function (j, row) {
@@ -216,8 +227,8 @@ var fplAnalyzer = {
         }
     },
     updateFixtureNavigateButton: function () {
-        if ( $('.ismPagPrev').length > 0 ) $('#fplAnalyzerControl .prevGW').html( $('.ismPagPrev').html().replace('Gameweek', 'GW') )
-        if ( $('.ismPagNext').length > 0 ) $('#fplAnalyzerControl .nextGW').html( $('.ismPagNext').html().replace('Gameweek', 'GW') )
+        if ( $('.ismPagPrev').length > 0 ) $('#fplAnalyzerControl .prevGW').html( $('.ismPagPrev').html().replace('Gameweek ', '') )
+        if ( $('.ismPagNext').length > 0 ) $('#fplAnalyzerControl .nextGW').html( $('.ismPagNext').html().replace('Gameweek ', '') )
     },
     getNextNOpponent: function ( team ) {
         var opponentString = ''
