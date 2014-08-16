@@ -58,7 +58,8 @@ var fplAnalyzer = {
         // red loading block on top left of page
         $('body').append( fplAnalyzer.controls.loader )
         // create the overlay of pich area
-        var parentDiv = $('<div id="fplAnalyzerControl" style="position: absolute; top: -42px; left: 0px; font-size: smaller;"></div>')
+        var top = $('.ismDefList.ismRHSDefList').length > 0 ? 0 : -42
+        var parentDiv = $('<div id="fplAnalyzerControl" style="position: absolute; top: '+top+'px; left: 0px; font-size: smaller;"></div>')
         // append ui controls above pitch area an dand bind their events
         $.each( fplAnalyzer.controls.pitchControls, function (i, v) {
             // show the price button on transfers page only
@@ -119,7 +120,7 @@ var fplAnalyzer = {
     updateOpponent: function () {
 	    $.each($("#ismTeamDisplayGraphical div[id^=ismGraphical]"), function (i, player) {
             // this is for first time only
-	    	$(player).find(".ismElementDetail dd").css('background-color', '#126E37')
+	    	// $(player).find(".ismElementDetail dd").css('background-color', '#126E37')
             // find opponent using shirt title attribute
             var opponent = '<div class="opponent">'+ ( fplAnalyzer.getNextNOpponent( $(player).find(".ismShirt").attr("title") ) ) +'</div>'
             // get NTI Percent
