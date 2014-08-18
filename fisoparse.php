@@ -15,7 +15,7 @@ $visitor->setScreenResolution('1024x768');
 $session = new GoogleAnalytics\Session();
 
 $page = new GoogleAnalytics\Page('/fisoparse.php');
-$page->setTitle('FPLAnalyzer by Esalman');
+$page->setTitle('Parser');
 
 $tracker->trackPageview($page, $session, $visitor);
 
@@ -24,7 +24,7 @@ $url = 'http://crackthecode.fiso.co.uk/blog/';
 $content = file_get_contents($url);
 $arr = array();
 foreach( explode(',', $_REQUEST['id']) as $playerId ) {
-	$start = strpos( $content, 'fpl1415-player-history?id='.$playerId )-9;
+	$start = strpos( $content, 'fpl1415-player-history?id='.$playerId.'\'' )-9;
 	$str = substr($content, $start, 200);
 	$end = strpos($str, '</tr>')-5;
 	$str = substr($str, 0, $end);
