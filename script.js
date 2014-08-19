@@ -32,7 +32,12 @@ var fplAnalyzer = {
     totalPlayer: null,
     options: {
     	domain: 'http://pure-ocean-7640.herokuapp.com/',
-        numberOfOpponentsToDisplay: 1
+        numberOfOpponentsToDisplay: 1,
+        predictors: {
+            CTC: 'FISO CrackTheCode (http://www.fiso.co.uk/crackthecode.php)',
+            TFPL: 'TotalFPL (http://totalfpl.com/pricechanges)'
+        },
+        selectedPredictor: 'CTC'
     },
     // ui elements
     controls: {
@@ -46,9 +51,10 @@ var fplAnalyzer = {
             own: $('<a class="own" style="background: #35A649; color: #FFF; padding: 2px 3px; display: inline-block; margin: 0px 1px 1px 0px; font-size: small; width: 14px; text-align: center;" href="javascript:void(0)" title="% Ownership">%</a><br />'),
             ntit: $('<a class="ntit" style="background: #126e37; color: #FFF; padding: 2px 3px; display: inline-block; margin: 0px 1px 1px 0px; font-size: small; width: 14px; text-align: center;" href="javascript:void(0)" title="NTI Today">T</a>'),
             nti: $('<a class="nti" style="background: #126e37; color: #FFF; padding: 2px 3px; display: inline-block; margin: 0px 1px 1px 0px; font-size: small; width: 14px; text-align: center;" href="javascript:void(0)" title="% NTI">%</a>'),
-            genRMT: $('<a class="genRMT" style="background: #126e37; color: #FFF; padding: 2px 3px; display: inline-block; margin: 0px 1px 1px 0px; font-size: small; width: 14px; text-align: center;" href="javascript:void(0)" title="Rate My Team!">★</a><br />'),
+            // fiso: $('<a class="fiso" style="background: #35A649; color: #FFF; padding: 2px 3px; display: inline-block; margin: 0px 1px 1px 0px; font-size: small; width: 14px; text-align: center;" href="http://www.fiso.co.uk/crackthecode.php" target="_blank" title="FISO CrackTheCode">F</a>'),
+            predictor: $('<a class="predictor" style="background: #126e37; color: #FFF; padding: 2px 3px; display: inline-block; margin: 0px 1px 1px 0px; font-size: small; width: 14px; text-align: center;" href="javascript:void(0)" title="Change Predictor">&#x25EA;</a><br />'),
+            genRMT: $('<a class="genRMT" style="background: #35A649; color: #FFF; padding: 2px 3px; display: inline-block; margin: 0px 1px 1px 0px; font-size: small; width: 14px; text-align: center;" href="javascript:void(0)" title="Rate My Team!">★</a>'),
             webLink: $('<a class="webLink" style="background: #35A649; color: #FFF; padding: 2px 3px; display: inline-block; margin: 0px 1px 1px 0px; font-size: small; width: 14px; text-align: center;" href="http://fplanalyzer.com" target="_blank" title="www.fplanalyzer.com">?</a>'),
-            fiso: $('<a class="fiso" style="background: #35A649; color: #FFF; padding: 2px 3px; display: inline-block; margin: 0px 1px 1px 0px; font-size: small; width: 14px; text-align: center;" href="http://www.fiso.co.uk/crackthecode.php" target="_blank" title="FISO CrackTheCode">F</a>'),
             share: $('<a class="share" style="background: #35A649; color: #FFF; padding: 2px 3px; display: inline-block; margin: 0px 1px 1px 0px; font-size: small; width: 14px; text-align: center;" href="javascript:void(0)" title="Share FPL Analyzer!">❤</a><div class="addthis_sharing_toolbox" style="display: none;" data-url="http://fplanalyzer.com" data-title="Check out FPL Analyzer!"></div>')
         }
     },
@@ -77,9 +83,13 @@ var fplAnalyzer = {
         // set total player
         if ( $('.ismDefList.ismRHSDefList').length > 0 ) {
             fplAnalyzer.totalPlayer = parseInt( $( $('.ismDefList.ismRHSDefList').children('dd')[2] ).text().replace(/,/g, '') )
-            createCookie('fplAnalyzerTotalPlayer', fplAnalyzer.totalPlayer, 7)
+            createCookie('fplAnalyzerTotalPlayer', fplAnalyzer.totalPlayer, 30)
         }
         if ( readCookie('fplAnalyzerTotalPlayer') && fplAnalyzer.totalPlayer != readCookie('fplAnalyzerTotalPlayer') ) fplAnalyzer.totalPlayer = readCookie('fplAnalyzerTotalPlayer')
+
+        // read predictor setting from cookie
+        var selectedPredictor = readCookie('fplAnalyzerSelectedPredictor')
+        if ( selectedPredictor ) fplAnalyzer.options.selectedPredictor = selectedPredictor
 
         // addthis share buttons
         var f = document.createElement('script')
@@ -88,9 +98,9 @@ var fplAnalyzer = {
         document.getElementsByTagName("head")[0].appendChild(f)
     },
     // executed after bookmark clicked the first time, and also on reload button click
-    update: function () {
+    update: function (reload) {
     	fplAnalyzer.controls.loader.show()
-    	fplAnalyzer.loadFisoData()
+    	fplAnalyzer.loadNTIData(reload)
     },
     // parse the fixture table and update fixArr
     loadFixture: function () {
@@ -137,12 +147,12 @@ var fplAnalyzer = {
         fplAnalyzer.controls.loader.hide()
     },
     // make an ajax call to heroku to scrape fiso data and return formatted nti data by player id
-    loadFisoData: function () {
+    loadNTIData: function (reload) {
     	var ids = []
     	$.each( $('div[id^=ismGraphical]'), function (i, v) {
     		var id = fplAnalyzer.getPlayerIDFromContainer(v)
             // only request those players not saved yet
-    		if ( fplAnalyzer.playerAttrib[ id ] == undefined ) {
+    		if ( reload === true || fplAnalyzer.playerAttrib[ id ] == undefined ) {
                 fplAnalyzer.playerAttrib[ id ] = {}
     			ids.push( id )
             }
@@ -156,8 +166,9 @@ var fplAnalyzer = {
     	}
 
         // make request
-    	$.getJSON( fplAnalyzer.options.domain+'fisoparse.php', {
-    		id: ids.join(',')
+    	$.getJSON( fplAnalyzer.options.domain+'parse.php', {
+    		id: ids.join(','),
+            p: fplAnalyzer.options.selectedPredictor
     	} ).done( function ( json ) {
     		// populate the player attribute array
             $.each( json, function (i, v) {
@@ -182,7 +193,7 @@ var fplAnalyzer = {
     // events associated to ui elements
     events: {
         reload: function () {
-            fplAnalyzer.update()
+            fplAnalyzer.update(true)
         },
         prevGW: function () {
             fplAnalyzer.controls.loader.show()
@@ -226,6 +237,21 @@ var fplAnalyzer = {
                 })
             })
             window.prompt('You can copy the following RMT string:', rmtStr)
+        },
+        predictor: function () {
+            var prompt = fplAnalyzer.options.selectedPredictor == 'CTC' ? fplAnalyzer.options.predictors.TFPL : fplAnalyzer.options.predictors.CTC
+            if ( fplAnalyzer.options.selectedPredictor == 'CTC' ) {
+                if ( confirm("You are currently using "+fplAnalyzer.options.predictors.CTC+". Change predictor to "+fplAnalyzer.options.predictors.TFPL+'?') ) {
+                    fplAnalyzer.options.selectedPredictor = 'TFPL'
+                    createCookie('fplAnalyzerSelectedPredictor', fplAnalyzer.options.selectedPredictor, 30)
+                }
+            }
+            else if ( fplAnalyzer.options.selectedPredictor == 'TFPL' ) {
+                if ( confirm("You are currently using "+fplAnalyzer.options.predictors.TFPL+". Change predictor to "+fplAnalyzer.options.predictors.CTC+'?') ) {
+                    fplAnalyzer.options.selectedPredictor = 'CTC'
+                    createCookie('fplAnalyzerSelectedPredictor', fplAnalyzer.options.selectedPredictor, 30)
+                }
+            }
         }
     },
     updateFixtureNavigateButton: function () {
