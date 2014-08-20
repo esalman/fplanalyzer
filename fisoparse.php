@@ -2,22 +2,24 @@
 header('Access-Control-Allow-Origin: http://fantasy.premierleague.com');
 
 // anonymous tracking
-require 'library/php-ga/autoload.php';
-use UnitedPrototype\GoogleAnalytics;
+// measurement protocol
+$post = array(
+	'v' => 1,
+	'tid' => 'UA-42877953-1',
+	'cid' => isset( $_REQUEST['cid'] ) ? $_REQUEST['cid'] : null,
+	't' => 'pageview',
+	'dh' => 'fplanalyzer.com',
+	'dp' => '/parse.php',
+	'dt' => 'Parser',
+	'uip' => $_SERVER['REMOTE_ADDR'],
+	'ua' => $_SERVER['HTTP_USER_AGENT'],
+	'dr' => $_SERVER['HTTP_REFERER'],
+);
 
-$tracker = new GoogleAnalytics\Tracker('UA-42877953-1', 'fplanalyzer.com');
-
-$visitor = new GoogleAnalytics\Visitor();
-$visitor->setIpAddress($_SERVER['REMOTE_ADDR']);
-$visitor->setUserAgent($_SERVER['HTTP_USER_AGENT']);
-$visitor->setScreenResolution('1024x768');
-
-$session = new GoogleAnalytics\Session();
-
-$page = new GoogleAnalytics\Page('/fisoparse.php');
-$page->setTitle('Parser');
-
-$tracker->trackPageview($page, $session, $visitor);
+$request = 'https://ssl.google-analytics.com/collect';
+$request .= '?payload_data&';
+$request .= http_build_query($post);
+$result = file_get_contents( $request );
 
 // parsing player data
 // p = price

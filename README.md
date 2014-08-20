@@ -1,7 +1,7 @@
 FPLAnalyzer
 ===========
 
-This bookmarklet allows you to preview opponents on different GW on fantasy.premierleague.com
+This bookmarklet allows you to preview opponents on different GW on [fantasy.premierleague.com](http://fantasy.premierleague.com)
 
 More details, how to setup, how to use: [fplanalyzer.com](http://fplanalyzer.com)
 
