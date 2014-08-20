@@ -1,4 +1,4 @@
-fplanalyzer
+FPLAnalyzer
 ===========
 
 This bookmarklet allows you to preview opponents on different GW on fantasy.premierleague.com
