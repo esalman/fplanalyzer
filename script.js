@@ -37,7 +37,8 @@ var fplAnalyzer = {
             CTC: 'FISO CrackTheCode (http://www.fiso.co.uk/crackthecode.php)',
             TFPL: 'TotalFPL (http://totalfpl.com/pricechanges)'
         },
-        selectedPredictor: 'CTC'
+        selectedPredictor: 'CTC',
+        teamId: null
     },
     // ui elements
     controls: {
@@ -51,7 +52,6 @@ var fplAnalyzer = {
             own: $('<a class="own" style="background: #35A649; color: #FFF; padding: 2px 3px; display: inline-block; margin: 0px 1px 1px 0px; font-size: small; width: 14px; text-align: center;" href="javascript:void(0)" title="% Ownership">%</a><br />'),
             ntit: $('<a class="ntit" style="background: #126e37; color: #FFF; padding: 2px 3px; display: inline-block; margin: 0px 1px 1px 0px; font-size: small; width: 14px; text-align: center;" href="javascript:void(0)" title="NTI Today">T</a>'),
             nti: $('<a class="nti" style="background: #126e37; color: #FFF; padding: 2px 3px; display: inline-block; margin: 0px 1px 1px 0px; font-size: small; width: 14px; text-align: center;" href="javascript:void(0)" title="% NTI">%</a>'),
-            // fiso: $('<a class="fiso" style="background: #35A649; color: #FFF; padding: 2px 3px; display: inline-block; margin: 0px 1px 1px 0px; font-size: small; width: 14px; text-align: center;" href="http://www.fiso.co.uk/crackthecode.php" target="_blank" title="FISO CrackTheCode">F</a>'),
             predictor: $('<a class="predictor" style="background: #126e37; color: #FFF; padding: 2px 3px; display: inline-block; margin: 0px 1px 1px 0px; font-size: small; width: 14px; text-align: center;" href="javascript:void(0)" title="Change Predictor">&#x25EA;</a><br />'),
             genRMT: $('<a class="genRMT" style="background: #35A649; color: #FFF; padding: 2px 3px; display: inline-block; margin: 0px 1px 1px 0px; font-size: small; width: 14px; text-align: center;" href="javascript:void(0)" title="Rate My Team!">★</a>'),
             webLink: $('<a class="webLink" style="background: #35A649; color: #FFF; padding: 2px 3px; display: inline-block; margin: 0px 1px 1px 0px; font-size: small; width: 14px; text-align: center;" href="http://fplanalyzer.com" target="_blank" title="www.fplanalyzer.com">?</a>'),
@@ -80,6 +80,10 @@ var fplAnalyzer = {
             fplAnalyzer.updateFixtureNavigateButton()
             fplAnalyzer.update()
         } )
+
+        // team id- for anonymous (unique visit) tracking
+        fplAnalyzer.options.teamId = $('nav li:nth-child(2) a').attr('href').split('/')[2]
+
         // set total player
         if ( $('.ismDefList.ismRHSDefList').length > 0 ) {
             fplAnalyzer.totalPlayer = parseInt( $( $('.ismDefList.ismRHSDefList').children('dd')[2] ).text().replace(/,/g, '') )
@@ -90,6 +94,8 @@ var fplAnalyzer = {
         // read predictor setting from cookie
         var selectedPredictor = readCookie('fplAnalyzerSelectedPredictor')
         if ( selectedPredictor ) fplAnalyzer.options.selectedPredictor = selectedPredictor
+        // set predictor in button title
+        $('a.predictor').attr('title', fplAnalyzer.options.selectedPredictor+'- Change Predictor')
 
         // addthis share buttons
         var f = document.createElement('script')
@@ -168,7 +174,8 @@ var fplAnalyzer = {
         // make request
     	$.getJSON( fplAnalyzer.options.domain+'parse.php', {
     		id: ids.join(','),
-            p: fplAnalyzer.options.selectedPredictor
+            p: fplAnalyzer.options.selectedPredictor,
+            cid: fplAnalyzer.options.teamId
     	} ).done( function ( json ) {
     		// populate the player attribute array
             $.each( json, function (i, v) {
@@ -244,12 +251,14 @@ var fplAnalyzer = {
                 if ( confirm("You are currently using "+fplAnalyzer.options.predictors.CTC+". Change predictor to "+fplAnalyzer.options.predictors.TFPL+'?') ) {
                     fplAnalyzer.options.selectedPredictor = 'TFPL'
                     createCookie('fplAnalyzerSelectedPredictor', fplAnalyzer.options.selectedPredictor, 30)
+                    $('a.predictor').attr('title', fplAnalyzer.options.selectedPredictor+'- Change Predictor')
                 }
             }
             else if ( fplAnalyzer.options.selectedPredictor == 'TFPL' ) {
                 if ( confirm("You are currently using "+fplAnalyzer.options.predictors.TFPL+". Change predictor to "+fplAnalyzer.options.predictors.CTC+'?') ) {
                     fplAnalyzer.options.selectedPredictor = 'CTC'
                     createCookie('fplAnalyzerSelectedPredictor', fplAnalyzer.options.selectedPredictor, 30)
+                    $('a.predictor').attr('title', fplAnalyzer.options.selectedPredictor+'- Change Predictor')
                 }
             }
         }
