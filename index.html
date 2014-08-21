@@ -33,11 +33,15 @@
 						data-lang="en">Follow @fplanalyzer</a>
 					<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
 				</p>
-        
-        <p><!-- AddThis Button -->
-        	<div class="addthis_sharing_toolbox" data-url="http://fplanalyzer.com" data-title="Check out FPL Analyzer!"></div>
-          <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-53edcfcd20914b86"></script>
+
+        <p>
+          <iframe src="//www.facebook.com/plugins/likebox.php?href=https%3A%2F%2Fwww.facebook.com%2Ffplanalyzer&amp;width&amp;height=62&amp;colorscheme=light&amp;show_faces=false&amp;header=false&amp;stream=false&amp;show_border=false&amp;appId=1501537446756610" scrolling="no" frameborder="0" style="border:none; overflow:hidden; height:62px; margin-left: -10px;" allowTransparency="true"></iframe>
         </p>
+        
+        <p style="margin-bottom: 8px;">If you like FPLAnalyzer, please share it :)</p>
+        <!-- AddThis Button -->
+      	<div class="addthis_sharing_toolbox" data-url="http://fplanalyzer.com" data-title="Check out FPL Analyzer!"></div>
+        <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-53edcfcd20914b86"></script>
         
       	<!--
         <p>
@@ -63,17 +67,20 @@
         <a name="fplanalyzer" class="anchor" href="#fplanalyzer"><span class="octicon octicon-link"></span></a>FPLAnalyzer</h1>
         -->
         
-        <p><strong>FPLAnalyzer</strong></p>
+        <p>
+          <blockquote><h3>Can we please just agree that this is a bloody awesome feature<br />
+          <small>- <a href="http://www.reddit.com/r/FantasyPL/comments/2e0zrp/fpl_analyzer_now_supports_both_fiso_and_totalfpl/cjv47gz" target="_blank">/r/legbuster</a></small></h3></blockquote>
+        </p>
         
         <p>This bookmarklet allows you to preview opponents on different gameweeks 
-        	on <a href="http://fantasy.premierleague.com">fantasy.premierleague.com</a>. In addition, it shows
+        	on <a href="http://fantasy.premierleague.com">fantasy.premierleague.com</a>. It shows some additional
         	information on FPL team/transfer page and has other features, including:<br />
         	<ul>
         		<li>Opponent</li>
         		<li>Price</li>
         		<li>% Ownership</li>
         		<li>NTI (Net Transfer In) today</li>
-        		<li>% NTI</li>
+        		<li>%NTI (<a href="http://www.fiso.co.uk/crackthecode.php" target="_blank">FISO</a>/<a href="http://totalfpl.com/pricechanges" target="_blank">TotalFPL</a>)</li>
         		<li>Generate an RMT text</li>
         	</ul>
         </p>
@@ -82,21 +89,27 @@
         
         <p><img src="https://raw.github.com/esalman/fplanalyzer/gh-pages/images/download.png" /></p>
         
+        <p><strong>YouTube Video Demo</strong></p>
+        
         <p><iframe width="560" height="315" src="//www.youtube.com/embed/1wNjv1G_ijA" frameborder="0" allowfullscreen></iframe></p>
         
         <p><strong>Motivation</strong></p>
         
-				<p>I have been playing FPL since 2007/08 (<a href="http://fantasy.premierleague.com/entry/52935/history/">link</a>).
+        <p>I have been playing FPL since 2007/08 (<a href="http://fantasy.premierleague.com/entry/52935/history/">link</a>).
           When picking team or transferring, there are a handful of info that we need to check frequently.
-          I created this bookmarklet to help visualizing those information. Also the FPL website is not very modern 
-          and it could use some interactivity, which is what this script adds.
+          I created this bookmarklet to help visualizing those information. It adds some much needed interactivity
+          to the FPL website.
+        </p>
+        
+        <p>This is a hobby project of mine, you can use this for free. The code is also open-sourced for anyone interested.
+          I made this tool because I follow football and enjoy playing FPL. Hope you'll enjoy using this as well.
         </p>
         
         <p><strong>How To Setup</strong></p>
         
         <p><em>Method #1 (easy)</em></p>
         
-        <p>Drag the following button to your browser bookmark toolbar.</p>
+        <p>Drag this button to your browser bookmark toolbar.</p>
         
         <p><a href='javascript:(function(){if(window.fplAnalyzeTrigger==undefined){var e=document.createElement("script");e.setAttribute("type","text/javascript");e.setAttribute("src","http://pure-ocean-7640.herokuapp.com/script.min.js");document.getElementsByTagName("head")[0].appendChild(e)}else{window.fplAnalyzeTrigger()}})()' style="background: none repeat scroll 0 0 #eee; padding: 3px 12px;">FPL Analyzer</a></p>
         
@@ -107,7 +120,7 @@
 					<li>Name of the bookmark: <em>anything</em></li>
         </ul><p><em>URL of the bookmark:</em></p>
         
-        <textarea style="width: 100%; height: 100px;">javascript:(function(){if(window.fplAnalyzeTrigger==undefined){var e=document.createElement("script");e.setAttribute("type","text/javascript");e.setAttribute("src","http://pure-ocean-7640.herokuapp.com/script.min.js");document.getElementsByTagName("head")[0].appendChild(e)}else{window.fplAnalyzeTrigger()}})()</textarea>
+        <textarea style="width: 100%; height: 85px; font-size: smaller;">javascript:(function(){if(window.fplAnalyzeTrigger==undefined){var e=document.createElement("script");e.setAttribute("type","text/javascript");e.setAttribute("src","http://pure-ocean-7640.herokuapp.com/script.min.js");document.getElementsByTagName("head")[0].appendChild(e)}else{window.fplAnalyzeTrigger()}})()</textarea>
         
         <ul>
         <li>Save the boomark (preferably on browser bookmark bar)</li>
@@ -116,17 +129,20 @@
         <p><strong>How To Use</strong></p>
         
         <ul>
-        <li>Go to your 'Pick Team' or Transfer page on FPL site.</li>
-        <li>Click on the bookmark twice (first time click loads script on background, you might need to allow a few seconds for it.)</li>
+        <li>Go to your 'Pick Team' or Transfer page on FPL site (also works on points, any other player, dreame team etc. pages)</li>
+        <li>Click on the bookmark twice (first time click loads script on background, you might need to allow a few seconds for that)</li>
         <li>You will see a few links appear on the top-left of your team as in the screenshot above. Feel free to explore now.</li>
         </ul>
 
-        <p>You can use it for strategizing in different ways. On Pick Team page, navigate to different gameweeks and click the bookmark to see if your current
-        team is any good for the forseeable future. On Transfer page, shuffle your team, navigate to another GW and click the bookmark to strategize.</p>
+        <p>You can use it for strategizing in different ways. On Pick Team page, load the bookmark, then navigate to different
+          gameweeks and to see if your current team is any good for the forseeable future. On Transfer page, load the bookmark,
+          then shuffle your team and navigate to another GW plan your strategy. In addition, you can keep an eye on %NTI to
+          track price changes.
+        </p>
         
         <p><strong>Updates &amp; New Features</strong></p>
         
-        <p>If you are using the above code as instructed, then whenever I update the script, new feature should
+        <p>If you are using the above code as instructed, then whenever I update the script, new features should
           be readily available to you. If it's not, then you might need to clear your browser cache.</p>
         
         <p>You can check the <a href="https://github.com/esalman/fplanalyzer/commits/master">commit log</a> on
@@ -142,11 +158,13 @@
 
         <p><strong>Disclaimer</strong></p>
         
-        <p>NTI data are collected from <a href="http://www.fiso.co.uk/crackthecode.php">fiso.co.uk</a>. However I 
-          do not store or use their data in any way. My script (located on heroku.com) scrapes their data 
-          and then displays on user's browser. I did ask on FISO forums if I could store their data because that would
-          make my work easier but didn't receive the permission. But I believe as long as I am not using/storing
-          their data (their work is awesome btw) my bookmarklet should be fine.
+        <p>NTI data are collected from these two super-mega-awesome sources-
+          <a href="http://www.fiso.co.uk/crackthecode.php" target="_blank">FISO Crack The Code</a>
+          and <a href="http://totalfpl.com/pricechanges" target="_blank">TotalFPL Price Changes</a>. However I 
+          do not store or use their data in any way. My script (located on Heroku) scrapes their data 
+          and then displays on your's browser. I did ask on FISO forums if I could store their data because that would
+          make my work easier but didn't receive the permission. But I feel as long as I am not using/storing
+          their data for any commercial purpose, usage of my bookmarklet should be fine and legit.
         </p>
         <p>I also assure that when you use this bookmarklet, your team data is not collected.</p>
         
