@@ -182,7 +182,7 @@ var fplAnalyzer = {
                 fplAnalyzer.playerAttrib[i].NTIPercent = v.c
                 fplAnalyzer.playerAttrib[i].price = v.p
                 fplAnalyzer.playerAttrib[i].NTIToday = v.d
-                fplAnalyzer.playerAttrib[i].ownership = fplAnalyzer.totalPlayer ? ( v.n * 100 / fplAnalyzer.totalPlayer ).toFixed(2) + '%' : v.n
+                fplAnalyzer.playerAttrib[i].ownership = fplAnalyzer.totalPlayer ? ( (v.n).replace(/[^\d\.\-\ ]/g, '') * 100 / fplAnalyzer.totalPlayer ).toFixed(2) + '%' : v.n
             } )
             // update opponent
     		fplAnalyzer.loadFixture()
