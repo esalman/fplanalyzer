@@ -46,7 +46,8 @@ var fplAnalyzer = {
         pitchControls: {
             reload: $('<a class="reload" style="background: #126e37; color: #FFF; padding: 2px 3px; display: inline-block; margin: 0px 1px 1px 0px; font-size: small; width: 14px; text-align: center;" href="javascript:void(0)" title="Reload">&#8634;</a>'),
             prevGW: $('<a class="prevGW" style="background: #126e37; color: #FFF; padding: 2px 3px; display: inline-block; margin: 0px 1px 1px 0px; font-size: small; width: 14px; text-align: center;" href="javascript:void(0)" title="Previous GW">◀</a>'),
-            nextGW: $('<a class="nextGW" style="background: #126e37; color: #FFF; padding: 2px 3px; display: inline-block; margin: 0px 1px 1px 0px; font-size: small; width: 14px; text-align: center;" href="javascript:void(0)" title="Next GW">▶</a><br />'),
+            nextGW: $('<a class="nextGW" style="background: #126e37; color: #FFF; padding: 2px 3px; display: inline-block; margin: 0px 1px 1px 0px; font-size: small; width: 14px; text-align: center;" href="javascript:void(0)" title="Next GW">▶</a>'),
+            oppoNos: $('<a class="oppoNos" style="background: #126e37; color: #FFF; padding: 2px 3px; display: inline-block; margin: 0px 1px 1px 0px; font-size: small; width: 14px; text-align: center; font-style: italic;" href="javascript:void(0)" title="Number of GW">1</a><br />'),
             opponent: $('<a class="opponent" style="background: #35A649; color: #FFF; padding: 2px 3px; display: inline-block; margin: 0px 1px 1px 0px; font-size: small; width: 14px; text-align: center;" href="javascript:void(0)" title="Opponent">V</a>'),
             price: $('<a class="price" style="background: #35A649; color: #FFF; padding: 2px 3px; display: inline-block; margin: 0px 1px 1px 0px; font-size: small; width: 14px; text-align: center;" href="javascript:void(0)" title="Price">£</a>'),
             own: $('<a class="own" style="background: #35A649; color: #FFF; padding: 2px 3px; display: inline-block; margin: 0px 1px 1px 0px; font-size: small; width: 14px; text-align: center;" href="javascript:void(0)" title="% Ownership">%</a><br />'),
@@ -64,6 +65,8 @@ var fplAnalyzer = {
     	fplAnalyzer.initialized = true
         // red loading block on top left of page
         $('body').append( fplAnalyzer.controls.loader )
+        // css
+        $('.ismElementDetail').css('text-shadow', '1px 1px 1px #000')
         // create the overlay of pich area
         var top = $('.ismDefList.ismRHSDefList').length > 0 ? 0 : -42
         var parentDiv = $('<div id="fplAnalyzerControl" style="position: absolute; top: '+top+'px; left: 0px; font-size: smaller;"></div>')
@@ -96,7 +99,11 @@ var fplAnalyzer = {
         if ( selectedPredictor ) fplAnalyzer.options.selectedPredictor = selectedPredictor
         // set predictor in button title
         $('a.predictor').attr('title', fplAnalyzer.options.selectedPredictor+'- Change Predictor')
-
+        // read number of opponent setting from cookie
+        var numberOfOpponentsToDisplay = readCookie('fplAnalyzerNumberOfOpponentsToDisplay')
+        fplAnalyzer.options.numberOfOpponentsToDisplay = numberOfOpponentsToDisplay ? numberOfOpponentsToDisplay : 1
+        $('a.oppoNos').html(fplAnalyzer.options.numberOfOpponentsToDisplay)
+        
         // addthis share buttons
         var f = document.createElement('script')
         f.setAttribute("type", "text/javascript")
@@ -110,27 +117,26 @@ var fplAnalyzer = {
     },
     // parse the fixture table and update fixArr
     loadFixture: function () {
-    	fplAnalyzer.fixArr = {}
+    	// fplAnalyzer.fixArr = {}
         if ( ! $('.ismFixtureTable caption').html() ) return
         fplAnalyzer.currentGW = $('.ismFixtureTable caption').html().split('-')[0].replace('Gameweek', '').trim()
-	    $.each($(".ismFixtureTable tbody tr"), function (i, team) {
+
+        // clear current gw
+        $.each( fplAnalyzer.teamArr, function ( i, v ) {
+            if ( fplAnalyzer.fixArr[i] == undefined ) fplAnalyzer.fixArr[i] = {}
+            fplAnalyzer.fixArr[i][fplAnalyzer.currentGW] = ''
+        } )
+
+        $.each($(".ismFixtureTable tbody tr"), function (i, team) {
             h = $(team).children(".ismHomeTeam").html()
 	    	a = $(team).children(".ismAwayTeam").html()
             if ( fplAnalyzer.teamArr[h] == undefined ) return
-            // if no fixture, empty
+
             // at home uppercase, at away lowercase
             // home on the left column
-            if ( fplAnalyzer.fixArr[h] == undefined ) {
-                fplAnalyzer.fixArr[h] = {}
-                fplAnalyzer.fixArr[h][fplAnalyzer.currentGW] = fplAnalyzer.teamArr[a].toUpperCase()
-            }
-            else fplAnalyzer.fixArr[h][fplAnalyzer.currentGW] += ' '+ fplAnalyzer.teamArr[a].toUpperCase()
+            fplAnalyzer.fixArr[h][fplAnalyzer.currentGW] += fplAnalyzer.teamArr[a].toUpperCase()+' '
             // away on the right column
-            if ( fplAnalyzer.fixArr[a] == undefined ) {
-                fplAnalyzer.fixArr[a] = {}
-                fplAnalyzer.fixArr[a][fplAnalyzer.currentGW] = fplAnalyzer.teamArr[h].toLowerCase()
-           }
-           else fplAnalyzer.fixArr[a][fplAnalyzer.currentGW] += ' '+ fplAnalyzer.teamArr[h].toLowerCase()
+            fplAnalyzer.fixArr[a][fplAnalyzer.currentGW] += fplAnalyzer.teamArr[h].toLowerCase()+' '
 	    })
     },
     // update data of each player in pitch area
@@ -185,7 +191,7 @@ var fplAnalyzer = {
                 fplAnalyzer.playerAttrib[i].ownership = fplAnalyzer.totalPlayer ? ( (v.n).replace(/[^\d\.\-\ ]/g, '') * 100 / fplAnalyzer.totalPlayer ).toFixed(2) + '%' : v.n
             } )
             // update opponent
-    		fplAnalyzer.loadFixture()
+    		// fplAnalyzer.loadFixture()
     		fplAnalyzer.updateOpponent()
     	} )
         fplAnalyzer.loadFixture()
@@ -261,6 +267,11 @@ var fplAnalyzer = {
                     $('a.predictor').attr('title', fplAnalyzer.options.selectedPredictor+'- Change Predictor')
                 }
             }
+        },
+        oppoNos: function () {
+            fplAnalyzer.options.numberOfOpponentsToDisplay = ( fplAnalyzer.options.numberOfOpponentsToDisplay % 3 ) + 1
+            createCookie('fplAnalyzerNumberOfOpponentsToDisplay', fplAnalyzer.options.numberOfOpponentsToDisplay, 30)
+            $('a.oppoNos').html(fplAnalyzer.options.numberOfOpponentsToDisplay)
         }
     },
     updateFixtureNavigateButton: function () {

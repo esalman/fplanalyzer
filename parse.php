@@ -2,8 +2,8 @@
 // debug mode
 // ini_set('display_errors', false);
 // error_reporting(E_ALL^E_WARNING^E_NOTICE);
-ini_set('display_errors', true);
-error_reporting(E_ALL);
+ini_set('display_errors', false);
+error_reporting(E_ALL^E_WARNING^E_NOTICE);
 
 header('Access-Control-Allow-Origin: http://fantasy.premierleague.com');
 
