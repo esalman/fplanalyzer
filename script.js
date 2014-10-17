@@ -48,6 +48,7 @@ var fplAnalyzer = {
             prevGW: $('<a class="prevGW" style="background: #126e37; color: #FFF; padding: 2px 3px; display: inline-block; margin: 0px 1px 1px 0px; font-size: small; width: 14px; text-align: center;" href="javascript:void(0)" title="Previous GW">◀</a>'),
             nextGW: $('<a class="nextGW" style="background: #126e37; color: #FFF; padding: 2px 3px; display: inline-block; margin: 0px 1px 1px 0px; font-size: small; width: 14px; text-align: center;" href="javascript:void(0)" title="Next GW">▶</a>'),
             oppoNos: $('<a class="oppoNos" style="background: #126e37; color: #FFF; padding: 2px 3px; display: inline-block; margin: 0px 1px 1px 0px; font-size: small; width: 14px; text-align: center; font-style: italic;" href="javascript:void(0)" title="Number of GW">1</a><br />'),
+            points: $('<a class="points" style="background: #35A649; color: #FFF; padding: 2px 3px; display: inline-block; margin: 0px 1px 1px 0px; font-size: small; width: 14px; text-align: center;" href="javascript:void(0)" title="Points (Live BPS)">P</a>'),
             opponent: $('<a class="opponent" style="background: #35A649; color: #FFF; padding: 2px 3px; display: inline-block; margin: 0px 1px 1px 0px; font-size: small; width: 14px; text-align: center;" href="javascript:void(0)" title="Opponent">V</a>'),
             price: $('<a class="price" style="background: #35A649; color: #FFF; padding: 2px 3px; display: inline-block; margin: 0px 1px 1px 0px; font-size: small; width: 14px; text-align: center;" href="javascript:void(0)" title="Price">£</a>'),
             own: $('<a class="own" style="background: #35A649; color: #FFF; padding: 2px 3px; display: inline-block; margin: 0px 1px 1px 0px; font-size: small; width: 14px; text-align: center;" href="javascript:void(0)" title="% Ownership">%</a><br />'),
@@ -72,7 +73,6 @@ var fplAnalyzer = {
         var parentDiv = $('<div id="fplAnalyzerControl" style="position: absolute; top: '+top+'px; left: 0px; font-size: smaller;"></div>')
         // append ui controls above pitch area an dand bind their events
         $.each( fplAnalyzer.controls.pitchControls, function (i, v) {
-            // show the price button on transfers page only
             parentDiv.append( v )
             v.bind( 'click', fplAnalyzer.events[i] )
         } )
@@ -99,6 +99,7 @@ var fplAnalyzer = {
         if ( selectedPredictor ) fplAnalyzer.options.selectedPredictor = selectedPredictor
         // set predictor in button title
         $('a.predictor').attr('title', fplAnalyzer.options.selectedPredictor+'- Change Predictor')
+
         // read number of opponent setting from cookie
         var numberOfOpponentsToDisplay = readCookie('fplAnalyzerNumberOfOpponentsToDisplay')
         fplAnalyzer.options.numberOfOpponentsToDisplay = numberOfOpponentsToDisplay ? numberOfOpponentsToDisplay : 1
@@ -142,8 +143,6 @@ var fplAnalyzer = {
     // update data of each player in pitch area
     updateOpponent: function () {
 	    $.each($("#ismTeamDisplayGraphical div[id^=ismGraphical]"), function (i, player) {
-            // this is for first time only
-	    	// $(player).find(".ismElementDetail dd").css('background-color', '#126E37')
             // find opponent using shirt title attribute
             var opponent = '<div class="opponent">'+ ( fplAnalyzer.getNextNOpponent( $(player).find(".ismShirt").attr("title") ) ) +'</div>'
             // get NTI Percent
@@ -154,18 +153,25 @@ var fplAnalyzer = {
             var price = '<div class="price" style="display: none;">'+ fplAnalyzer.playerAttrib[ fplAnalyzer.getPlayerIDFromContainer(player) ].price +'</div>'
             // make %ownership div
             var ownership = '<div class="ownership" style="display: none;">'+ fplAnalyzer.playerAttrib[ fplAnalyzer.getPlayerIDFromContainer(player) ].ownership +'</div>'
-	    	$(player).find(".ismElementDetail dd").html( opponent + price + nti + ntit + ownership )
+            // points
+            var bp = fplAnalyzer.playerAttrib[ fplAnalyzer.getPlayerIDFromContainer(player) ].bonus
+            var pts = fplAnalyzer.getPlayerDataFromContainer( player, 'event_points' ) + ( bp != undefined && bp > 0 ? bp : 0 )
+            if ( fplAnalyzer.getPlayerDataFromContainer( player, 'is_captain' ) == true ) pts *= 2
+            var points = '<div class="points" style="display: none; '+( bp != undefined && bp > 0 ? 'color: #0F0; ' : '' )+'">'+ pts +'</div>'
+	    	$(player).find(".ismElementDetail dd").html( opponent + price + nti + ntit + ownership + points )
         })
         fplAnalyzer.controls.loader.hide()
     },
-    // make an ajax call to heroku to scrape fiso data and return formatted nti data by player id
+    // make an ajax call to heroku to scrape fiso/totalfpl data and return formatted nti data by player id
     loadNTIData: function (reload) {
     	var ids = []
     	$.each( $('div[id^=ismGraphical]'), function (i, v) {
     		var id = fplAnalyzer.getPlayerIDFromContainer(v)
             // only request those players not saved yet
     		if ( reload === true || fplAnalyzer.playerAttrib[ id ] == undefined ) {
-                fplAnalyzer.playerAttrib[ id ] = {}
+                fplAnalyzer.playerAttrib[ id ] = {
+                	'name': $(v).find('.ismPitchWebName').html().trim()
+                }
     			ids.push( id )
             }
     	} )
@@ -200,8 +206,10 @@ var fplAnalyzer = {
     getPlayerIDFromContainer: function ( el ) {
         return $(el).find('a.ismViewProfile').attr('href').replace('#', '')
     },
-    getPlayerPriceFromContainer: function ( el ) {
-        return $(el).find('dd > span').html()
+    // some stats (e.g. event_points) are available in the class attrib on points and team page
+    getPlayerDataFromContainer: function ( el, attrib ) {
+        if ( $(el).attr( 'class' ).split('  ')[1][0] != '{' ) return ''
+        return JSON.parse( $(el).attr( 'class' ).split('  ')[1] )[attrib]
     },
     // events associated to ui elements
     events: {
@@ -215,6 +223,92 @@ var fplAnalyzer = {
         nextGW: function () {
             fplAnalyzer.controls.loader.show()
             $('.ismPagination a').last().click()
+        },
+        points: function ( e ) {
+            $('.ismElementDetail dd > div').css('display', 'none')
+            $('.ismElementDetail dd > div.points').css('display', 'block')
+
+            // for updating total points
+            var totalPts = parseInt( $('.ismSBValue.ismSBPrimary div').html().split('<')[0].trim() )
+            var totalBP = 0
+
+            // cycle through players and build fixture array
+            var fixtures = []
+	        $.each( $('div[id^=ismGraphical]'), function (i, v) {
+	        	// get this player's fixture
+	        	var f = $('#ismFixtureTable td:contains("'+$(v).find('img.ismShirt').attr('title')+'")').parent().next().find('a.ismFixtureStatsLink').attr('data-id')
+	        	// also check unique
+	        	if ( f != undefined && fixtures.indexOf(f) == -1 ) fixtures.push(f)
+            } )
+
+	        for ( var i = 0; i < fixtures.length; i++ ) {
+                // make requests
+            	fplAnalyzer.controls.loader.show()
+                $.get('http://fantasy.premierleague.com/fixture/'+fixtures[i], function (response) {
+                    var bpsArr = []
+                    var bpsSum = 0
+                    // for home
+                    $.each( $($(response)[2]).find('tr'), function (i, v) {
+                        if ( $(v).find('td')[0] ) {
+                            bpsSum += parseInt( $( $(v).find('td')[12] ).html().trim() )
+                            bpsArr.push( { "name": $( $(v).find('td')[0] ).html().trim(), "bps": parseInt( $( $(v).find('td')[14] ).html().trim() ) } )
+                        }
+                    } )
+                    // for away
+                    $.each( $( $(response)[4] ).find('tr'), function (i, v) {
+                        if ( $(v).find('td')[0] ) {
+                            bpsSum += parseInt( $( $(v).find('td')[12] ).html().trim() )
+                            bpsArr.push( { "name": $( $(v).find('td')[0] ).html().trim(), "bps": parseInt( $( $(v).find('td')[14] ).html().trim() ) } )
+                        }
+                    } )
+                    // bonus already added by fpl
+                    if ( bpsSum > 0 ) {
+                        fplAnalyzer.controls.loader.hide()
+                        return
+                    }
+                    
+                    // sort
+                    for ( var i = 0; i < bpsArr.length-1; i++ ) {
+                        for ( var j = i+1; j < bpsArr.length; j++ ) {
+                            if ( bpsArr[i].bps < bpsArr[j].bps ) {
+                                var temp = bpsArr[j]
+                                bpsArr[j] = bpsArr[i]
+                                bpsArr[i] = temp
+                            }
+                        }
+                    }
+                    // calculate and assign
+                    var bp = 3
+                    var totalBP = 0
+                    for ( var i = 0; i < bpsArr.length; i++ ) {
+                        if ( i > 0 ) {
+                            if ( bpsArr[i].bps < bpsArr[i-1].bps ) bp--
+                            if ( bp <= 0 ) break
+                        }
+                        $.each( fplAnalyzer.playerAttrib, function (i1, v1) {
+                            if ( v1.name == bpsArr[i].name ) {
+                                fplAnalyzer.playerAttrib[i1].bonus = bp
+                                
+                                $.each($("#ismTeamDisplayGraphical div[id^=ismGraphical]"), function (i, player) {
+                                    if ( fplAnalyzer.getPlayerDataFromContainer( player, 'id' ) == i1 ) {
+                                        var pts = fplAnalyzer.getPlayerDataFromContainer( player, 'event_points' ) + bp
+                                        if ( fplAnalyzer.getPlayerDataFromContainer( player, 'is_captain' ) == true ) {
+                                        	pts *= 2
+                                        	totalBP += bp*2
+                                        }
+                                        else if ( fplAnalyzer.getPlayerDataFromContainer( player, 'sub' ) == 0 ) totalBP += bp
+                                        $(player).find(".ismElementDetail dd div.points").html( pts ).css( 'color', '#0F0' )
+                                    }
+                                })
+                            }
+                        } )
+                    }
+
+                    $('.ismSBValue.ismSBPrimary div').html( ( parseInt( $('.ismSBValue.ismSBPrimary div').html().split('<')[0].trim() ) + totalBP ) + '<sub>pts</sub>' )
+
+                    fplAnalyzer.controls.loader.hide()
+                })
+            }
         },
         opponent: function () {
             $('.ismElementDetail dd > div').css('display', 'none')
