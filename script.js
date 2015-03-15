@@ -139,6 +139,16 @@ var fplAnalyzer = {
             // away on the right column
             fplAnalyzer.fixArr[a][fplAnalyzer.currentGW] += fplAnalyzer.teamArr[h].toLowerCase()+' '
 	    })
+
+        // probable blank/dgw
+        fplAnalyzer.fixArr['Liverpool'][33] = ''
+        fplAnalyzer.fixArr['Hull'][33] = ''
+        fplAnalyzer.fixArr['Arsenal'][34] = fplAnalyzer.fixArr['Arsenal'][34] + 'SUN'
+        fplAnalyzer.fixArr['Sunderland'][34] = fplAnalyzer.fixArr['Sunderland'][34] + 'ars'
+        fplAnalyzer.fixArr['Aston Villa'][34] = fplAnalyzer.fixArr['Aston Villa'][34] + 'QPR'
+        fplAnalyzer.fixArr['Hull'][34] = fplAnalyzer.fixArr['Hull'][34] + 'LIV'
+        fplAnalyzer.fixArr['Liverpool'][34] = fplAnalyzer.fixArr['Liverpool'][34] + 'hul'
+        fplAnalyzer.fixArr['QPR'][34] = fplAnalyzer.fixArr['QPR'][34] + 'avl'
     },
     // update data of each player in pitch area
     updateOpponent: function () {
