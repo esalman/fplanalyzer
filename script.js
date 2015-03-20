@@ -143,8 +143,6 @@ var fplAnalyzer = {
         // probable blank/dgw
         fplAnalyzer.fixArr['Liverpool'][33] = ''
         fplAnalyzer.fixArr['Hull'][33] = ''
-        fplAnalyzer.fixArr['Arsenal'][34] = fplAnalyzer.fixArr['Arsenal'][34] + 'SUN'
-        fplAnalyzer.fixArr['Sunderland'][34] = fplAnalyzer.fixArr['Sunderland'][34] + 'ars'
         fplAnalyzer.fixArr['Hull'][34] = fplAnalyzer.fixArr['Hull'][34] + 'LIV'
         fplAnalyzer.fixArr['Liverpool'][34] = fplAnalyzer.fixArr['Liverpool'][34] + 'hul'
     },
