@@ -140,11 +140,6 @@ var fplAnalyzer = {
             fplAnalyzer.fixArr[a][fplAnalyzer.currentGW] += fplAnalyzer.teamArr[h].toLowerCase()+' '
 	    })
 
-        // probable blank/dgw
-        fplAnalyzer.fixArr['Liverpool'][33] = ''
-        fplAnalyzer.fixArr['Hull'][33] = ''
-        fplAnalyzer.fixArr['Hull'][34] = fplAnalyzer.fixArr['Hull'][34] + 'LIV'
-        fplAnalyzer.fixArr['Liverpool'][34] = fplAnalyzer.fixArr['Liverpool'][34] + 'hul'
     },
     // update data of each player in pitch area
     updateOpponent: function () {
