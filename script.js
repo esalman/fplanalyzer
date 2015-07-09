@@ -7,8 +7,6 @@ var fplAnalyzer = {
 		"Arsenal":"ARS",
 		"Everton":"EVE",
 		"West Brom":"WBA",
-		"Hull":"HUL",
-		"QPR":"QPR",
 		"Newcastle":"NEW",
 		"West Ham":"WHM",
 		"Southampton":"SOU",
@@ -17,12 +15,14 @@ var fplAnalyzer = {
 		"Crystal Palace":"CPA",
 		"Aston Villa":"AVL",
 		"Liverpool":"LIV",
-		"Burnley":"BUR",
 		"Man City":"MCY",
 		"Spurs":"TOT",
 		"Swansea":"SWA",
 		"Man Utd":"MUN",
-		"Chelsea":"CHE"
+        "Chelsea":"CHE",
+        "Bournemouth":"BOU",
+        "Watford":"WAT",
+        "Norwich":"NOR"
 	},
     // contains opponent of each team, updates each gw
     fixArr: {},
@@ -85,7 +85,7 @@ var fplAnalyzer = {
         } )
 
         // team id- for anonymous (unique visit) tracking
-        fplAnalyzer.options.teamId = $('nav li:nth-child(2) a').attr('href').split('/')[2]
+        // fplAnalyzer.options.teamId = $('nav li:nth-child(2) a').attr('href').split('/')[2]
 
         // set total player
         if ( $('.ismDefList.ismRHSDefList').length > 0 ) {
